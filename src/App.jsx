@@ -16,56 +16,56 @@ const INITIAL_STORES = [
 ];
 
 const INITIAL_DEALS = [
-  { id: 101, storeId: 1, item: "Organic Strawberries", category: "Produce", price: "3.99", unit: "1 lb", orig: "5.99", tag: "Oregon Grown" },
-  { id: 102, storeId: 1, item: "Wild Coho Salmon", category: "Seafood", price: "11.99", unit: "lb", orig: "16.99", tag: "Local Catch" },
-  { id: 103, storeId: 1, item: "Lacinato Kale", category: "Produce", price: "1.49", unit: "bunch", orig: "2.49", tag: "Willamette Valley" },
-  { id: 104, storeId: 1, item: "Tillamook Cheddar", category: "Dairy", price: "5.99", unit: "10 oz", orig: "7.49", tag: "Oregon Made" },
-  { id: 105, storeId: 1, item: "Sourdough Loaf", category: "Bakery", price: "4.50", unit: "loaf", orig: "6.00", tag: "House Baked" },
-  { id: 201, storeId: 2, item: "Organic Blueberries", category: "Produce", price: "4.99", unit: "pint", orig: "6.99", tag: "Organic" },
-  { id: 202, storeId: 2, item: "365 Greek Yogurt", category: "Dairy", price: "3.49", unit: "32 oz", orig: "4.99", tag: "Store Brand" },
-  { id: 203, storeId: 2, item: "Atlantic Salmon Fillet", category: "Seafood", price: "12.99", unit: "lb", orig: "17.99", tag: "Fresh Cut" },
-  { id: 204, storeId: 2, item: "Baby Arugula", category: "Produce", price: "2.99", unit: "5 oz", orig: "4.49", tag: "Organic" },
-  { id: 205, storeId: 2, item: "Almond Butter", category: "Pantry", price: "7.99", unit: "16 oz", orig: "10.99", tag: "365 Brand" },
-  { id: 301, storeId: 3, item: "Rainier Cherries", category: "Produce", price: "3.99", unit: "lb", orig: "5.99", tag: "Pacific NW" },
-  { id: 302, storeId: 3, item: "Oregon Brie", category: "Dairy", price: "6.49", unit: "8 oz", orig: "8.99", tag: "Local Creamery" },
-  { id: 303, storeId: 3, item: "Heirloom Tomatoes", category: "Produce", price: "3.49", unit: "lb", orig: "5.49", tag: "Heirloom" },
-  { id: 304, storeId: 3, item: "Rotisserie Chicken", category: "Deli", price: "8.99", unit: "each", orig: "11.99", tag: "Fresh Daily" },
-  { id: 305, storeId: 3, item: "Willamette Pinot Noir", category: "Wine", price: "16.99", unit: "bottle", orig: "22.99", tag: "Willamette" },
-  { id: 401, storeId: 4, item: "Local Honey", category: "Pantry", price: "7.99", unit: "12 oz", orig: "10.99", tag: "Portland Bees" },
-  { id: 402, storeId: 4, item: "Snap Peas", category: "Produce", price: "2.49", unit: "lb", orig: "3.99", tag: "Local Farm" },
-  { id: 403, storeId: 4, item: "Oat Milk", category: "Dairy", price: "3.99", unit: "32 oz", orig: "5.49", tag: "Organic" },
-  { id: 404, storeId: 4, item: "Kombucha GT's", category: "Drinks", price: "2.99", unit: "16 oz", orig: "4.49", tag: "Raw" },
-  { id: 405, storeId: 4, item: "Bulk Granola", category: "Bulk", price: "3.49", unit: "lb", orig: "5.00", tag: "House Made" },
-  { id: 501, storeId: 5, item: "Organic Apples", category: "Produce", price: "1.99", unit: "3 lb bag", orig: "4.99", tag: "Big Savings" },
-  { id: 502, storeId: 5, item: "Pasta Variety Pack", category: "Pantry", price: "2.49", unit: "3 pack", orig: "6.99", tag: "Stock Up" },
-  { id: 503, storeId: 5, item: "Frozen Broccoli", category: "Frozen", price: "1.29", unit: "12 oz", orig: "2.99", tag: "Value" },
-  { id: 504, storeId: 5, item: "Greek Yogurt 4pk", category: "Dairy", price: "2.99", unit: "4 pack", orig: "6.49", tag: "Clearance" },
-  { id: 505, storeId: 5, item: "Sparkling Water 12pk", category: "Drinks", price: "3.99", unit: "12 pack", orig: "8.99", tag: "Big Deal" },
-  { id: 601, storeId: 6, item: "Persian Cucumbers", category: "Produce", price: "2.49", unit: "lb", orig: "3.99", tag: "Fresh" },
-  { id: 602, storeId: 6, item: "Mango (Ataulfo)", category: "Produce", price: "0.79", unit: "each", orig: "1.49", tag: "Honey Mango" },
-  { id: 603, storeId: 6, item: "Fresh Turmeric Root", category: "Produce", price: "1.99", unit: "lb", orig: "3.49", tag: "Specialty" },
-  { id: 604, storeId: 6, item: "Basmati Rice", category: "Pantry", price: "8.99", unit: "10 lb", orig: "13.99", tag: "Long Grain" },
-  { id: 605, storeId: 6, item: "Halloumi Cheese", category: "Dairy", price: "5.49", unit: "8 oz", orig: "7.99", tag: "Imported" },
-  { id: 701, storeId: 7, item: "Mandarin Oranges", category: "Produce", price: "3.99", unit: "3 lb bag", orig: "5.49", tag: "Seasonal" },
-  { id: 702, storeId: 7, item: "Everything Bagel Seasoning", category: "Pantry", price: "1.99", unit: "2.3 oz", orig: "2.99", tag: "TJ's Fave" },
-  { id: 703, storeId: 7, item: "Cauliflower Gnocchi", category: "Frozen", price: "2.69", unit: "12 oz", orig: "3.99", tag: "Fan Favorite" },
-  { id: 704, storeId: 7, item: "Unexpected Cheddar", category: "Dairy", price: "3.99", unit: "8 oz", orig: "5.49", tag: "TJ's Exclusive" },
-  { id: 705, storeId: 7, item: "Cold Brew Coffee", category: "Drinks", price: "2.99", unit: "32 oz", orig: "4.49", tag: "Smooth" },
-  { id: 801, storeId: 8, item: "Fresh Fenugreek", category: "Produce", price: "1.49", unit: "bunch", orig: "2.49", tag: "Specialty" },
-  { id: 802, storeId: 8, item: "Lamb Shoulder", category: "Meat", price: "7.99", unit: "lb", orig: "11.99", tag: "Halal" },
-  { id: 803, storeId: 8, item: "Dried Limes", category: "Pantry", price: "2.99", unit: "4 oz", orig: "4.99", tag: "Persian" },
-  { id: 804, storeId: 8, item: "Fresh Pita Bread", category: "Bakery", price: "2.49", unit: "pack", orig: "3.99", tag: "Fresh Baked" },
-  { id: 805, storeId: 8, item: "Pomegranate Molasses", category: "Pantry", price: "3.99", unit: "10 oz", orig: "5.99", tag: "Imported" },
-  { id: 901, storeId: 9, item: "Burrata Cheese", category: "Dairy", price: "6.99", unit: "4 oz", orig: "9.99", tag: "Fresh Daily" },
-  { id: 902, storeId: 9, item: "Micro Greens Mix", category: "Produce", price: "4.99", unit: "2 oz", orig: "6.99", tag: "Local Farm" },
-  { id: 903, storeId: 9, item: "Imported Prosciutto", category: "Deli", price: "9.99", unit: "4 oz", orig: "13.99", tag: "San Daniele" },
-  { id: 904, storeId: 9, item: "Truffle Salt", category: "Pantry", price: "7.99", unit: "2 oz", orig: "11.99", tag: "Italian" },
-  { id: 905, storeId: 9, item: "Sourdough Crackers", category: "Pantry", price: "3.99", unit: "5 oz", orig: "5.49", tag: "Artisan" },
-  { id: 1001, storeId: 10, item: "Bulk Quinoa", category: "Bulk", price: "3.99", unit: "lb", orig: "5.50", tag: "Organic" },
-  { id: 1002, storeId: 10, item: "Free-Range Eggs", category: "Dairy", price: "5.49", unit: "dozen", orig: "7.99", tag: "Pasture Raised" },
-  { id: 1003, storeId: 10, item: "Tempeh", category: "Protein", price: "3.29", unit: "8 oz", orig: "4.49", tag: "Local Made" },
-  { id: 1004, storeId: 10, item: "Bulk Oats", category: "Bulk", price: "1.29", unit: "lb", orig: "2.00", tag: "Organic" },
-  { id: 1005, storeId: 10, item: "Organic Spinach", category: "Produce", price: "2.99", unit: "5 oz", orig: "4.49", tag: "Organic" },
+  { id: 101, storeId: 1, item: "Organic Strawberries", category: "Produce", price: "3.99", unit: "1 lb", orig: "5.99", tag: "Oregon Grown", photo: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&q=80" },
+  { id: 102, storeId: 1, item: "Wild Coho Salmon", category: "Seafood", price: "11.99", unit: "lb", orig: "16.99", tag: "Local Catch", photo: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80" },
+  { id: 103, storeId: 1, item: "Lacinato Kale", category: "Produce", price: "1.49", unit: "bunch", orig: "2.49", tag: "Willamette Valley", photo: "https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=400&q=80" },
+  { id: 104, storeId: 1, item: "Tillamook Cheddar", category: "Dairy", price: "5.99", unit: "10 oz", orig: "7.49", tag: "Oregon Made", photo: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80" },
+  { id: 105, storeId: 1, item: "Sourdough Loaf", category: "Bakery", price: "4.50", unit: "loaf", orig: "6.00", tag: "House Baked", photo: "https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&q=80" },
+  { id: 201, storeId: 2, item: "Organic Blueberries", category: "Produce", price: "4.99", unit: "pint", orig: "6.99", tag: "Organic", photo: "https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=400&q=80" },
+  { id: 202, storeId: 2, item: "365 Greek Yogurt", category: "Dairy", price: "3.49", unit: "32 oz", orig: "4.99", tag: "Store Brand", photo: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=80" },
+  { id: 203, storeId: 2, item: "Atlantic Salmon Fillet", category: "Seafood", price: "12.99", unit: "lb", orig: "17.99", tag: "Fresh Cut", photo: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" },
+  { id: 204, storeId: 2, item: "Baby Arugula", category: "Produce", price: "2.99", unit: "5 oz", orig: "4.49", tag: "Organic", photo: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" },
+  { id: 205, storeId: 2, item: "Almond Butter", category: "Pantry", price: "7.99", unit: "16 oz", orig: "10.99", tag: "365 Brand", photo: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&q=80" },
+  { id: 301, storeId: 3, item: "Rainier Cherries", category: "Produce", price: "3.99", unit: "lb", orig: "5.99", tag: "Pacific NW", photo: "https://images.unsplash.com/photo-1528821128474-27f963b062bf?w=400&q=80" },
+  { id: 302, storeId: 3, item: "Oregon Brie", category: "Dairy", price: "6.49", unit: "8 oz", orig: "8.99", tag: "Local Creamery", photo: "https://images.unsplash.com/photo-1589881133825-bfb2a5a3e4b7?w=400&q=80" },
+  { id: 303, storeId: 3, item: "Heirloom Tomatoes", category: "Produce", price: "3.49", unit: "lb", orig: "5.49", tag: "Heirloom", photo: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&q=80" },
+  { id: 304, storeId: 3, item: "Rotisserie Chicken", category: "Deli", price: "8.99", unit: "each", orig: "11.99", tag: "Fresh Daily", photo: "https://images.unsplash.com/photo-1598103442097-8b74394b95c1?w=400&q=80" },
+  { id: 305, storeId: 3, item: "Willamette Pinot Noir", category: "Wine", price: "16.99", unit: "bottle", orig: "22.99", tag: "Willamette", photo: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&q=80" },
+  { id: 401, storeId: 4, item: "Local Honey", category: "Pantry", price: "7.99", unit: "12 oz", orig: "10.99", tag: "Portland Bees", photo: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&q=80" },
+  { id: 402, storeId: 4, item: "Snap Peas", category: "Produce", price: "2.49", unit: "lb", orig: "3.99", tag: "Local Farm", photo: "https://images.unsplash.com/photo-1587049332298-1c42e83937a7?w=400&q=80" },
+  { id: 403, storeId: 4, item: "Oat Milk", category: "Dairy", price: "3.99", unit: "32 oz", orig: "5.49", tag: "Organic", photo: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&q=80" },
+  { id: 404, storeId: 4, item: "Kombucha GT's", category: "Drinks", price: "2.99", unit: "16 oz", orig: "4.49", tag: "Raw", photo: "https://images.unsplash.com/photo-1601924287811-e34de5d17476?w=400&q=80" },
+  { id: 405, storeId: 4, item: "Bulk Granola", category: "Bulk", price: "3.49", unit: "lb", orig: "5.00", tag: "House Made", photo: "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=400&q=80" },
+  { id: 501, storeId: 5, item: "Organic Apples", category: "Produce", price: "1.99", unit: "3 lb bag", orig: "4.99", tag: "Big Savings", photo: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&q=80" },
+  { id: 502, storeId: 5, item: "Pasta Variety Pack", category: "Pantry", price: "2.49", unit: "3 pack", orig: "6.99", tag: "Stock Up", photo: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=400&q=80" },
+  { id: 503, storeId: 5, item: "Frozen Broccoli", category: "Frozen", price: "1.29", unit: "12 oz", orig: "2.99", tag: "Value", photo: "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=400&q=80" },
+  { id: 504, storeId: 5, item: "Greek Yogurt 4pk", category: "Dairy", price: "2.99", unit: "4 pack", orig: "6.49", tag: "Clearance", photo: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=80" },
+  { id: 505, storeId: 5, item: "Sparkling Water 12pk", category: "Drinks", price: "3.99", unit: "12 pack", orig: "8.99", tag: "Big Deal", photo: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&q=80" },
+  { id: 601, storeId: 6, item: "Persian Cucumbers", category: "Produce", price: "2.49", unit: "lb", orig: "3.99", tag: "Fresh", photo: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?w=400&q=80" },
+  { id: 602, storeId: 6, item: "Mango (Ataulfo)", category: "Produce", price: "0.79", unit: "each", orig: "1.49", tag: "Honey Mango", photo: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=400&q=80" },
+  { id: 603, storeId: 6, item: "Fresh Turmeric Root", category: "Produce", price: "1.99", unit: "lb", orig: "3.49", tag: "Specialty", photo: "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400&q=80" },
+  { id: 604, storeId: 6, item: "Basmati Rice", category: "Pantry", price: "8.99", unit: "10 lb", orig: "13.99", tag: "Long Grain", photo: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80" },
+  { id: 605, storeId: 6, item: "Halloumi Cheese", category: "Dairy", price: "5.49", unit: "8 oz", orig: "7.99", tag: "Imported", photo: "https://images.unsplash.com/photo-1589881133825-bfb2a5a3e4b7?w=400&q=80" },
+  { id: 701, storeId: 7, item: "Mandarin Oranges", category: "Produce", price: "3.99", unit: "3 lb bag", orig: "5.49", tag: "Seasonal", photo: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?w=400&q=80" },
+  { id: 702, storeId: 7, item: "Everything Bagel Seasoning", category: "Pantry", price: "1.99", unit: "2.3 oz", orig: "2.99", tag: "TJ's Fave", photo: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80" },
+  { id: 703, storeId: 7, item: "Cauliflower Gnocchi", category: "Frozen", price: "2.69", unit: "12 oz", orig: "3.99", tag: "Fan Favorite", photo: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80" },
+  { id: 704, storeId: 7, item: "Unexpected Cheddar", category: "Dairy", price: "3.99", unit: "8 oz", orig: "5.49", tag: "TJ's Exclusive", photo: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80" },
+  { id: 705, storeId: 7, item: "Cold Brew Coffee", category: "Drinks", price: "2.99", unit: "32 oz", orig: "4.49", tag: "Smooth", photo: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80" },
+  { id: 801, storeId: 8, item: "Fresh Fenugreek", category: "Produce", price: "1.49", unit: "bunch", orig: "2.49", tag: "Specialty", photo: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80" },
+  { id: 802, storeId: 8, item: "Lamb Shoulder", category: "Meat", price: "7.99", unit: "lb", orig: "11.99", tag: "Halal", photo: "https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=400&q=80" },
+  { id: 803, storeId: 8, item: "Dried Limes", category: "Pantry", price: "2.99", unit: "4 oz", orig: "4.99", tag: "Persian", photo: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&q=80" },
+  { id: 804, storeId: 8, item: "Fresh Pita Bread", category: "Bakery", price: "2.49", unit: "pack", orig: "3.99", tag: "Fresh Baked", photo: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80" },
+  { id: 805, storeId: 8, item: "Pomegranate Molasses", category: "Pantry", price: "3.99", unit: "10 oz", orig: "5.99", tag: "Imported", photo: "https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&q=80" },
+  { id: 901, storeId: 9, item: "Burrata Cheese", category: "Dairy", price: "6.99", unit: "4 oz", orig: "9.99", tag: "Fresh Daily", photo: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&q=80" },
+  { id: 902, storeId: 9, item: "Micro Greens Mix", category: "Produce", price: "4.99", unit: "2 oz", orig: "6.99", tag: "Local Farm", photo: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" },
+  { id: 903, storeId: 9, item: "Imported Prosciutto", category: "Deli", price: "9.99", unit: "4 oz", orig: "13.99", tag: "San Daniele", photo: "https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?w=400&q=80" },
+  { id: 904, storeId: 9, item: "Truffle Salt", category: "Pantry", price: "7.99", unit: "2 oz", orig: "11.99", tag: "Italian", photo: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80" },
+  { id: 905, storeId: 9, item: "Sourdough Crackers", category: "Pantry", price: "3.99", unit: "5 oz", orig: "5.49", tag: "Artisan", photo: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=400&q=80" },
+  { id: 1001, storeId: 10, item: "Bulk Quinoa", category: "Bulk", price: "3.99", unit: "lb", orig: "5.50", tag: "Organic", photo: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&q=80" },
+  { id: 1002, storeId: 10, item: "Free-Range Eggs", category: "Dairy", price: "5.49", unit: "dozen", orig: "7.99", tag: "Pasture Raised", photo: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?w=400&q=80" },
+  { id: 1003, storeId: 10, item: "Tempeh", category: "Protein", price: "3.29", unit: "8 oz", orig: "4.49", tag: "Local Made", photo: "https://images.unsplash.com/photo-1617692855027-33b14f061079?w=400&q=80" },
+  { id: 1004, storeId: 10, item: "Bulk Oats", category: "Bulk", price: "1.29", unit: "lb", orig: "2.00", tag: "Organic", photo: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80" },
+  { id: 1005, storeId: 10, item: "Organic Spinach", category: "Produce", price: "2.99", unit: "5 oz", orig: "4.49", tag: "Organic", photo: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&q=80" },
 ];
 
 const CATEGORIES = ["All", "Produce", "Seafood", "Dairy", "Bakery", "Bulk", "Deli", "Meat", "Protein", "Drinks", "Pantry", "Frozen", "Wine"];
@@ -328,12 +328,14 @@ export default function App() {
         .card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid #e8e0d5; transition: all 0.2s; opacity: 0; animation: cin 0.3s ease forwards; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(44,74,46,0.1); }
         @keyframes cin { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
-        .cstripe { height: 5px; }
-        .cbody { padding: 11px 12px 7px; }
-        .ctag { display: inline-block; font-family: 'Nunito Sans', sans-serif; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; margin-bottom: 7px; }
-        .cname { font-family: 'Bitter', serif; font-size: 14px; font-weight: 700; color: #2c2c2c; line-height: 1.25; margin-bottom: 3px; }
-        .cstore { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #b0a090; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
-        .cprice { font-family: 'Bitter', serif; font-size: 24px; font-weight: 700; color: #2c4a2e; line-height: 1; }
+        .cphoto { width: 100%; height: 110px; object-fit: cover; display: block; background: #f0ebe3; }
+        .cphoto-wrap { position: relative; }
+        .cstripe { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+        .cbody { padding: 10px 12px 6px; }
+        .ctag { display: inline-block; font-family: 'Nunito Sans', sans-serif; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+        .cname { font-family: 'Bitter', serif; font-size: 14px; font-weight: 700; color: #2c2c2c; line-height: 1.25; margin-bottom: 2px; }
+        .cstore { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #b0a090; margin-bottom: 7px; display: flex; align-items: center; gap: 4px; }
+        .cprice { font-family: 'Bitter', serif; font-size: 22px; font-weight: 700; color: #2c4a2e; line-height: 1; }
         .cunit { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #b0a090; margin-top: 1px; }
         .corig { font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: #ccc; text-decoration: line-through; margin-top: 2px; }
         .cfoot { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px 10px; border-top: 1px solid #f5f0e8; margin-top: 7px; }
@@ -432,7 +434,10 @@ export default function App() {
                 const isAdded = addedIds.has(deal.id);
                 return (
                   <div key={deal.id} className="card" style={{ animationDelay: `${Math.min(i * 25, 280)}ms` }}>
-                    <div className="cstripe" style={{ background: store?.color }} />
+                    <div className="cphoto-wrap">
+                      <img className="cphoto" src={deal.photo} alt={deal.item} loading="lazy" />
+                      <div className="cstripe" style={{ background: store?.color }} />
+                    </div>
                     <div className="cbody">
                       <div className="ctag" style={{ background: store?.accent, color: store?.color }}>{deal.tag || deal.category}</div>
                       <div className="cname">{deal.item}</div>
