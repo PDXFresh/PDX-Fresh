@@ -1,4 +1,4 @@
-sximport { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ADMIN_PASSWORD = "pdxfresh2026";
 
