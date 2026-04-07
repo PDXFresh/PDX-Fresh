@@ -3,16 +3,16 @@ import { useState, useEffect } from "react";
 const ADMIN_PASSWORD = "pdxfresh2026";
 
 const INITIAL_STORES = [
-  { id: 1, name: "New Seasons Market", type: "Local Grocer", neighborhood: "Multiple Locations", color: "#3d6b4f", accent: "#d4edda", emoji: "🌿" },
-  { id: 2, name: "Whole Foods", type: "Natural Grocer", neighborhood: "Pearl District", color: "#1a6b3c", accent: "#d4f0e0", emoji: "🍃" },
-  { id: 3, name: "Market of Choice", type: "Oregon Local", neighborhood: "NW Portland", color: "#8b4513", accent: "#fdebd0", emoji: "🧺" },
-  { id: 4, name: "Green Zebra", type: "Neighborhood Market", neighborhood: "Multiple Locations", color: "#4a7c3f", accent: "#e8f5e2", emoji: "🦓" },
-  { id: 5, name: "Grocery Outlet", type: "Discount Grocer", neighborhood: "Multiple Locations", color: "#c0392b", accent: "#fde8e6", emoji: "🏷️" },
-  { id: 6, name: "World Foods", type: "International Market", neighborhood: "830 NW Everett St", color: "#7b5ea7", accent: "#ede7f6", emoji: "🌍" },
-  { id: 7, name: "Trader Joe's", type: "Specialty Grocer", neighborhood: "Multiple Locations", color: "#c07a2f", accent: "#fef3e2", emoji: "🔔" },
-  { id: 8, name: "Barbur World Foods", type: "International Market", neighborhood: "SW Barbur Blvd", color: "#2874a6", accent: "#d6eaf8", emoji: "🌏" },
-  { id: 9, name: "Providers Fine Foods", type: "Specialty Grocer", neighborhood: "NE Portland", color: "#5d4037", accent: "#efebe9", emoji: "✨" },
-  { id: 10, name: "Food Front Co-op", type: "Community Co-op", neighborhood: "NW Portland", color: "#00695c", accent: "#e0f2f1", emoji: "🌾" },
+  { id: 1, name: "New Seasons Market", type: "Local Grocer", neighborhood: "Multiple Locations", color: "#4a7c59", accent: "#eaf4ee", emoji: "🌿" },
+  { id: 2, name: "Whole Foods", type: "Natural Grocer", neighborhood: "Pearl District", color: "#2d6a4f", accent: "#e8f5ee", emoji: "🍃" },
+  { id: 3, name: "Market of Choice", type: "Oregon Local", neighborhood: "NW Portland", color: "#8b5e3c", accent: "#f5ece4", emoji: "🧺" },
+  { id: 4, name: "Green Zebra", type: "Neighborhood Market", neighborhood: "Multiple Locations", color: "#5a7a3a", accent: "#eef4e6", emoji: "🦓" },
+  { id: 5, name: "Grocery Outlet", type: "Discount Grocer", neighborhood: "Multiple Locations", color: "#b5451b", accent: "#faeee9", emoji: "🏷️" },
+  { id: 6, name: "World Foods", type: "International Market", neighborhood: "830 NW Everett St", color: "#6b5b95", accent: "#f0edf8", emoji: "🌍" },
+  { id: 7, name: "Trader Joe's", type: "Specialty Grocer", neighborhood: "Multiple Locations", color: "#c17f24", accent: "#faf2e4", emoji: "🔔" },
+  { id: 8, name: "Barbur World Foods", type: "International Market", neighborhood: "SW Barbur Blvd", color: "#2e6b8a", accent: "#e6f2f8", emoji: "🌏" },
+  { id: 9, name: "Providers Fine Foods", type: "Specialty Grocer", neighborhood: "NE Portland", color: "#7a4f3a", accent: "#f4ede8", emoji: "✨" },
+  { id: 10, name: "Food Front Co-op", type: "Community Co-op", neighborhood: "NW Portland", color: "#3d7a6b", accent: "#e6f4f1", emoji: "🌾" },
 ];
 
 const INITIAL_DEALS = [
@@ -76,10 +76,8 @@ function pctOff(price, orig) {
 
 function useLocalStorage(key, initial) {
   const [val, setVal] = useState(() => {
-    try {
-      const stored = localStorage.getItem(key);
-      return stored ? JSON.parse(stored) : initial;
-    } catch { return initial; }
+    try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : initial; }
+    catch { return initial; }
   });
   const update = (v) => {
     const next = typeof v === "function" ? v(val) : v;
@@ -95,182 +93,160 @@ function AdminPanel({ deals, setDeals, onExit }) {
   const [editingId, setEditingId] = useState(null);
   const [tab, setTab] = useState("add");
   const [toast, setToast] = useState(null);
-
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2000); };
   const storeName = INITIAL_STORES.find(s => s.id === selectedStore)?.name;
   const storeDeals = deals.filter(d => d.storeId === selectedStore);
   const clearForm = () => setForm({ item: "", category: "Produce", price: "", unit: "", orig: "", tag: "" });
-
   const handleSave = () => {
-    if (!form.item || !form.price || !form.orig || !form.unit) { showToast("Please fill in all required fields"); return; }
-    if (editingId) {
-      setDeals(prev => prev.map(d => d.id === editingId ? { ...d, ...form, storeId: selectedStore } : d));
-      showToast("Deal updated!"); setEditingId(null);
-    } else {
-      setDeals(prev => [...prev, { ...form, id: Date.now(), storeId: selectedStore }]);
-      showToast("Deal added!");
-    }
+    if (!form.item || !form.price || !form.orig || !form.unit) { showToast("Fill in all required fields"); return; }
+    if (editingId) { setDeals(prev => prev.map(d => d.id === editingId ? { ...d, ...form, storeId: selectedStore } : d)); showToast("Updated!"); setEditingId(null); }
+    else { setDeals(prev => [...prev, { ...form, id: Date.now(), storeId: selectedStore }]); showToast("Added!"); }
     clearForm();
   };
-
-  const handleEdit = (deal) => {
-    setForm({ item: deal.item, category: deal.category, price: deal.price, unit: deal.unit, orig: deal.orig, tag: deal.tag });
-    setEditingId(deal.id); setTab("add");
-  };
-
-  const handleDelete = (id) => { setDeals(prev => prev.filter(d => d.id !== id)); showToast("Deal removed"); };
-  const handleClearStore = () => { if (window.confirm(`Clear ALL deals for ${storeName}?`)) { setDeals(prev => prev.filter(d => d.storeId !== selectedStore)); showToast(`Cleared ${storeName}`); }};
-  const handleReset = () => { if (window.confirm("Reset ALL deals to defaults?")) { setDeals(INITIAL_DEALS); showToast("Reset to defaults"); }};
+  const handleEdit = (deal) => { setForm({ item: deal.item, category: deal.category, price: deal.price, unit: deal.unit, orig: deal.orig, tag: deal.tag }); setEditingId(deal.id); setTab("add"); };
+  const handleDelete = (id) => { setDeals(prev => prev.filter(d => d.id !== id)); showToast("Removed"); };
+  const handleClearStore = () => { if (window.confirm(`Clear all ${storeName} deals?`)) { setDeals(prev => prev.filter(d => d.storeId !== selectedStore)); showToast("Cleared"); } };
+  const handleReset = () => { if (window.confirm("Reset all deals?")) { setDeals(INITIAL_DEALS); showToast("Reset"); } };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0ede8", fontFamily: "'DM Sans', sans-serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-        .adm-header { background: #1a1a2e; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #e8a838; }
-        .adm-title { font-family: 'Lora', serif; font-size: 18px; font-weight: 700; color: #fff; }
-        .adm-title span { color: #e8a838; }
-        .adm-exit { font-size: 12px; font-weight: 600; color: #8899aa; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 20px; cursor: pointer; }
-        .adm-body { padding: 20px 16px 80px; max-width: 600px; margin: 0 auto; }
-        .adm-section { background: #fff; border-radius: 14px; border: 1px solid #e0dbd3; margin-bottom: 16px; overflow: hidden; }
-        .adm-section-header { padding: 14px 16px; background: #faf7f2; border-bottom: 1px solid #e0dbd3; font-family: 'Lora', serif; font-size: 14px; font-weight: 700; color: #1a1a2e; }
-        .adm-section-body { padding: 16px; }
-        .adm-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; margin-top: 12px; }
-        .adm-label:first-child { margin-top: 0; }
-        .adm-input { width: 100%; padding: 10px 13px; border: 1.5px solid #ddd; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1a1a2e; background: #faf8f5; outline: none; }
-        .adm-input:focus { border-color: #3d6b4f; }
-        .adm-select { width: 100%; padding: 10px 13px; border: 1.5px solid #ddd; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1a1a2e; background: #faf8f5; outline: none; }
-        .adm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .adm-btn-primary { width: 100%; padding: 13px; background: #1a1a2e; color: #e8a838; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 16px; }
-        .adm-btn-secondary { padding: 7px 14px; background: none; border: 1.5px solid #ddd; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: #888; cursor: pointer; }
-        .adm-btn-danger { padding: 7px 14px; background: none; border: 1.5px solid #f5c6c6; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: #c0392b; cursor: pointer; }
-        .adm-tabs { display: flex; border-bottom: 1px solid #e0dbd3; }
-        .adm-tab { flex: 1; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; color: #aaa; border: none; background: none; border-bottom: 2px solid transparent; text-transform: uppercase; letter-spacing: 0.5px; }
-        .adm-tab.active { color: #1a1a2e; border-bottom-color: #e8a838; }
-        .deal-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f5f0e8; }
-        .deal-row:last-child { border-bottom: none; }
-        .deal-row-name { font-size: 13px; font-weight: 600; color: #1a1a2e; }
-        .deal-row-meta { font-size: 11px; color: #aaa; margin-top: 2px; }
-        .deal-row-actions { display: flex; gap: 6px; }
-        .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .store-option { padding: 10px 12px; border-radius: 10px; border: 1.5px solid #ddd; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
-        .store-option.active { border-color: var(--sc); background: var(--sc); color: #fff; }
-        .store-option-name { font-size: 12px; font-weight: 600; }
-        .store-option-count { font-size: 10px; opacity: 0.7; margin-top: 1px; }
-        .adm-toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #e8dcc8; padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 500; z-index: 300; white-space: nowrap; }
-        .adm-stats { display: flex; gap: 12px; margin-bottom: 16px; }
-        .adm-stat-card { flex: 1; background: #fff; border-radius: 12px; padding: 14px; border: 1px solid #e0dbd3; text-align: center; }
-        .adm-stat-num { font-family: 'Lora', serif; font-size: 24px; font-weight: 700; color: #1a1a2e; }
-        .adm-stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; margin-top: 2px; }
+    <div style={{ minHeight: "100vh", background: "#f7f3ed", fontFamily: "'Nunito Sans', sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap');
+        .ah{background:#2c4a2e;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+        .at{font-family:'Bitter',serif;font-size:18px;font-weight:700;color:#f0ebe3;}.at span{color:#a8d5a2;}
+        .ax{font-size:12px;font-weight:700;color:#a8d5a2;background:rgba(168,213,162,0.15);border:1px solid rgba(168,213,162,0.3);padding:6px 14px;border-radius:20px;cursor:pointer;}
+        .ab{padding:18px 16px 80px;max-width:560px;margin:0 auto;}
+        .ac{background:#fff;border-radius:16px;border:1px solid #e8e0d5;margin-bottom:14px;overflow:hidden;}
+        .ach{padding:13px 16px;background:#faf7f2;border-bottom:1px solid #e8e0d5;font-family:'Bitter',serif;font-size:13px;font-weight:700;color:#2c4a2e;}
+        .acb{padding:16px;}
+        .al{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9a8a78;margin-bottom:5px;margin-top:11px;}
+        .al:first-child{margin-top:0;}
+        .ai{width:100%;padding:9px 12px;border:1.5px solid #ddd6cc;border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:14px;color:#2c2c2c;background:#fdfaf7;outline:none;}
+        .ai:focus{border-color:#4a7c59;}
+        .as{width:100%;padding:9px 12px;border:1.5px solid #ddd6cc;border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:14px;color:#2c2c2c;background:#fdfaf7;outline:none;}
+        .ar{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+        .ap{width:100%;padding:12px;background:#2c4a2e;color:#a8d5a2;border:none;border-radius:10px;font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}
+        .ase{padding:6px 13px;background:none;border:1.5px solid #ddd;border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:600;color:#888;cursor:pointer;}
+        .ad{padding:6px 13px;background:none;border:1.5px solid #f0c4b4;border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:600;color:#b5451b;cursor:pointer;}
+        .atb{display:flex;border-bottom:1px solid #e8e0d5;}
+        .atab{flex:1;padding:11px;font-family:'Nunito Sans',sans-serif;font-size:11px;font-weight:700;text-align:center;cursor:pointer;color:#aaa;border:none;background:none;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:0.5px;}
+        .atab.on{color:#2c4a2e;border-bottom-color:#4a7c59;}
+        .adr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f0e8;}
+        .adr:last-child{border-bottom:none;}
+        .asg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+        .aso{padding:9px 11px;border-radius:10px;border:1.5px solid #ddd;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all 0.15s;}
+        .aso.on{border-color:var(--sc);background:var(--sc);}
+        .atoast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#2c4a2e;color:#f0ebe3;padding:9px 18px;border-radius:20px;font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:600;z-index:300;white-space:nowrap;}
+        .astats{display:flex;gap:10px;margin-bottom:14px;}
+        .asc{flex:1;background:#fff;border-radius:12px;padding:12px;border:1px solid #e8e0d5;text-align:center;}
+        .asn{font-family:'Bitter',serif;font-size:22px;font-weight:700;color:#2c4a2e;}
+        .asl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#aaa;margin-top:2px;}
       `}</style>
-      <div className="adm-header">
-        <div className="adm-title">PDX <span>Fresh</span> — Admin</div>
-        <div className="adm-exit" onClick={onExit}>← Back to App</div>
+      <div className="ah">
+        <div className="at">PDX <span>Fresh</span> — Admin</div>
+        <div className="ax" onClick={onExit}>← Back</div>
       </div>
-      <div className="adm-body">
-        <div className="adm-stats">
-          <div className="adm-stat-card"><div className="adm-stat-num">{deals.length}</div><div className="adm-stat-label">Total Deals</div></div>
-          <div className="adm-stat-card"><div className="adm-stat-num">{INITIAL_STORES.length}</div><div className="adm-stat-label">Stores</div></div>
-          <div className="adm-stat-card"><div className="adm-stat-num">{storeDeals.length}</div><div className="adm-stat-label">This Store</div></div>
+      <div className="ab">
+        <div className="astats">
+          <div className="asc"><div className="asn">{deals.length}</div><div className="asl">Deals</div></div>
+          <div className="asc"><div className="asn">{INITIAL_STORES.length}</div><div className="asl">Stores</div></div>
+          <div className="asc"><div className="asn">{storeDeals.length}</div><div className="asl">This Store</div></div>
         </div>
-        <div className="adm-section">
-          <div className="adm-section-header">Select Store to Edit</div>
-          <div className="adm-section-body">
-            <div className="store-grid">
+        <div className="ac">
+          <div className="ach">Select Store</div>
+          <div className="acb">
+            <div className="asg">
               {INITIAL_STORES.map(s => (
-                <div key={s.id} className={`store-option ${selectedStore === s.id ? "active" : ""}`} style={{ "--sc": s.color }} onClick={() => { setSelectedStore(s.id); clearForm(); setEditingId(null); }}>
-                  <span style={{ fontSize: 16 }}>{s.emoji}</span>
+                <div key={s.id} className={`aso ${selectedStore === s.id ? "on" : ""}`} style={{ "--sc": s.color }} onClick={() => { setSelectedStore(s.id); clearForm(); setEditingId(null); }}>
+                  <span style={{ fontSize: 15 }}>{s.emoji}</span>
                   <div>
-                    <div className="store-option-name" style={{ color: selectedStore === s.id ? "#fff" : "#1a1a2e" }}>{s.name}</div>
-                    <div className="store-option-count">{deals.filter(d => d.storeId === s.id).length} deals</div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: selectedStore === s.id ? "#fff" : "#2c2c2c" }}>{s.name}</div>
+                    <div style={{ fontSize: 10, opacity: 0.6, color: selectedStore === s.id ? "#fff" : "#888" }}>{deals.filter(d => d.storeId === s.id).length} deals</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="adm-section">
-          <div className="adm-tabs">
-            <button className={`adm-tab ${tab === "add" ? "active" : ""}`} onClick={() => { setTab("add"); clearForm(); setEditingId(null); }}>{editingId ? "✏️ Editing" : "➕ Add Deal"}</button>
-            <button className={`adm-tab ${tab === "manage" ? "active" : ""}`} onClick={() => setTab("manage")}>📋 Manage ({storeDeals.length})</button>
+        <div className="ac">
+          <div className="atb">
+            <button className={`atab ${tab === "add" ? "on" : ""}`} onClick={() => { setTab("add"); clearForm(); setEditingId(null); }}>{editingId ? "✏️ Editing" : "＋ Add Deal"}</button>
+            <button className={`atab ${tab === "manage" ? "on" : ""}`} onClick={() => setTab("manage")}>Manage ({storeDeals.length})</button>
           </div>
           {tab === "add" && (
-            <div className="adm-section-body">
-              <div style={{ fontSize: 13, color: "#888", marginBottom: 14 }}>Adding deal for: <strong style={{ color: INITIAL_STORES.find(s => s.id === selectedStore)?.color }}>{storeName}</strong></div>
-              <div className="adm-label">Item Name *</div>
-              <input className="adm-input" placeholder="e.g. Organic Strawberries" value={form.item} onChange={e => setForm(f => ({ ...f, item: e.target.value }))} />
-              <div className="adm-label">Category *</div>
-              <select className="adm-select" value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
+            <div className="acb">
+              <div style={{ fontSize: 12, color: "#888", marginBottom: 12 }}>Store: <strong style={{ color: INITIAL_STORES.find(s => s.id === selectedStore)?.color }}>{storeName}</strong></div>
+              <div className="al">Item Name *</div>
+              <input className="ai" placeholder="e.g. Organic Strawberries" value={form.item} onChange={e => setForm(f => ({ ...f, item: e.target.value }))} />
+              <div className="al">Category *</div>
+              <select className="as" value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
                 {CATEGORIES.filter(c => c !== "All").map(c => <option key={c}>{c}</option>)}
               </select>
-              <div className="adm-row">
-                <div><div className="adm-label">Sale Price * (no $)</div><input className="adm-input" placeholder="3.99" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} /></div>
-                <div><div className="adm-label">Regular Price * (no $)</div><input className="adm-input" placeholder="5.99" value={form.orig} onChange={e => setForm(f => ({ ...f, orig: e.target.value }))} /></div>
+              <div className="ar">
+                <div><div className="al">Sale Price *</div><input className="ai" placeholder="3.99" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} /></div>
+                <div><div className="al">Regular Price *</div><input className="ai" placeholder="5.99" value={form.orig} onChange={e => setForm(f => ({ ...f, orig: e.target.value }))} /></div>
               </div>
-              <div className="adm-row">
-                <div><div className="adm-label">Unit *</div><input className="adm-input" placeholder="lb, bunch, each..." value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} /></div>
-                <div><div className="adm-label">Tag (optional)</div><input className="adm-input" placeholder="Oregon Grown..." value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))} /></div>
+              <div className="ar">
+                <div><div className="al">Unit *</div><input className="ai" placeholder="lb, bunch..." value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} /></div>
+                <div><div className="al">Tag</div><input className="ai" placeholder="Oregon Grown..." value={form.tag} onChange={e => setForm(f => ({ ...f, tag: e.target.value }))} /></div>
               </div>
               {form.price && form.orig && parseFloat(form.price) < parseFloat(form.orig) && (
-                <div style={{ marginTop: 12, padding: "8px 12px", background: "#e8f5e2", borderRadius: 8, fontSize: 12, color: "#3d6b4f", fontWeight: 600 }}>✓ {pctOff(form.price, form.orig)}% savings — looks good!</div>
+                <div style={{ marginTop: 10, padding: "7px 11px", background: "#eaf4ee", borderRadius: 7, fontSize: 12, color: "#4a7c59", fontWeight: 700 }}>✓ {pctOff(form.price, form.orig)}% off — looks good!</div>
               )}
-              <button className="adm-btn-primary" onClick={handleSave}>{editingId ? "✓ Update Deal" : "＋ Add Deal"}</button>
-              {editingId && <button className="adm-btn-secondary" style={{ width: "100%", marginTop: 8 }} onClick={() => { clearForm(); setEditingId(null); }}>Cancel Edit</button>}
+              <button className="ap" onClick={handleSave}>{editingId ? "✓ Update Deal" : "＋ Add Deal"}</button>
+              {editingId && <button className="ase" style={{ width: "100%", marginTop: 8 }} onClick={() => { clearForm(); setEditingId(null); }}>Cancel</button>}
             </div>
           )}
           {tab === "manage" && (
-            <div className="adm-section-body">
-              {storeDeals.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "24px 0", color: "#bbb", fontSize: 13 }}>No deals yet for {storeName}.</div>
-              ) : (
+            <div className="acb">
+              {storeDeals.length === 0 ? <div style={{ textAlign: "center", padding: "20px 0", color: "#bbb", fontSize: 13 }}>No deals for {storeName} yet.</div> : (
                 <>
                   {storeDeals.map(deal => (
-                    <div key={deal.id} className="deal-row">
+                    <div key={deal.id} className="adr">
                       <div style={{ flex: 1 }}>
-                        <div className="deal-row-name">{deal.item}</div>
-                        <div className="deal-row-meta">{deal.category} · {deal.unit} · {pctOff(deal.price, deal.orig)}% off</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#2c2c2c" }}>{deal.item}</div>
+                        <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>{deal.category} · {deal.unit} · {pctOff(deal.price, deal.orig)}% off</div>
                       </div>
-                      <div style={{ fontFamily: "'Lora', serif", fontSize: 15, fontWeight: 700, marginRight: 10 }}>${deal.price}</div>
-                      <div className="deal-row-actions">
-                        <button className="adm-btn-secondary" onClick={() => handleEdit(deal)}>Edit</button>
-                        <button className="adm-btn-danger" onClick={() => handleDelete(deal.id)}>✕</button>
+                      <div style={{ fontFamily: "'Bitter',serif", fontSize: 15, fontWeight: 700, color: "#2c4a2e", marginRight: 10 }}>${deal.price}</div>
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <button className="ase" onClick={() => handleEdit(deal)}>Edit</button>
+                        <button className="ad" onClick={() => handleDelete(deal.id)}>✕</button>
                       </div>
                     </div>
                   ))}
-                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #f0ebe4", display: "flex", justifyContent: "flex-end" }}>
-                    <button className="adm-btn-danger" onClick={handleClearStore}>Clear all {storeName} deals</button>
+                  <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #f0ebe4", display: "flex", justifyContent: "flex-end" }}>
+                    <button className="ad" onClick={handleClearStore}>Clear all {storeName} deals</button>
                   </div>
                 </>
               )}
             </div>
           )}
         </div>
-        <div className="adm-section">
-          <div className="adm-section-header" style={{ color: "#c0392b" }}>⚠️ Danger Zone</div>
-          <div className="adm-section-body">
-            <div style={{ fontSize: 13, color: "#888", marginBottom: 12 }}>Reset everything back to the original sample deals.</div>
-            <button className="adm-btn-danger" onClick={handleReset}>Reset all deals to defaults</button>
+        <div className="ac">
+          <div className="ach" style={{ color: "#b5451b" }}>⚠️ Danger Zone</div>
+          <div className="acb">
+            <div style={{ fontSize: 13, color: "#888", marginBottom: 10 }}>Reset everything back to sample deals.</div>
+            <button className="ad" onClick={handleReset}>Reset all deals to defaults</button>
           </div>
         </div>
       </div>
-      {toast && <div className="adm-toast">✓ {toast}</div>}
+      {toast && <div className="atoast">✓ {toast}</div>}
     </div>
   );
 }
 
 function AdminLogin({ onSuccess }) {
-  const [pw, setPw] = useState("");
-  const [error, setError] = useState(false);
-  const handleSubmit = () => { if (pw === ADMIN_PASSWORD) { onSuccess(); } else { setError(true); setTimeout(() => setError(false), 1500); }};
+  const [pw, setPw] = useState(""); const [err, setErr] = useState(false);
+  const go = () => { if (pw === ADMIN_PASSWORD) onSuccess(); else { setErr(true); setTimeout(() => setErr(false), 1500); } };
   return (
-    <div style={{ minHeight: "100vh", background: "#1a1a2e", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Lora:wght@700&family=DM+Sans:wght@400;600&display=swap');`}</style>
-      <div style={{ fontSize: 48, marginBottom: 16 }}>🌲</div>
-      <div style={{ fontFamily: "'Lora', serif", fontSize: 24, fontWeight: 700, color: "#fff", marginBottom: 4 }}>PDX <span style={{ color: "#e8a838" }}>Fresh</span></div>
-      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#6677aa", marginBottom: 32 }}>Admin Panel</div>
-      <input type="password" placeholder="Enter password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()}
-        style={{ width: "100%", maxWidth: 280, padding: "12px 16px", borderRadius: 10, border: `1.5px solid ${error ? "#e05555" : "rgba(255,255,255,0.15)"}`, background: "rgba(255,255,255,0.07)", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: 15, outline: "none", textAlign: "center" }} />
-      {error && <div style={{ color: "#e05555", fontSize: 12, marginTop: 8, fontFamily: "'DM Sans', sans-serif" }}>Incorrect password</div>}
-      <button onClick={handleSubmit} style={{ marginTop: 14, width: "100%", maxWidth: 280, padding: "13px", background: "#e8a838", color: "#1a1a2e", border: "none", borderRadius: 10, fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Sign In</button>
+    <div style={{ minHeight: "100vh", background: "#2c4a2e", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@700&family=Nunito+Sans:wght@400;600&display=swap');`}</style>
+      <div style={{ fontSize: 52, marginBottom: 14 }}>🌿</div>
+      <div style={{ fontFamily: "'Bitter',serif", fontSize: 26, fontWeight: 700, color: "#f0ebe3", marginBottom: 4 }}>PDX <span style={{ color: "#a8d5a2" }}>Fresh</span></div>
+      <div style={{ fontFamily: "'Nunito Sans',sans-serif", fontSize: 13, color: "#7aaa82", marginBottom: 30 }}>Admin Panel</div>
+      <input type="password" placeholder="Password" value={pw} onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && go()}
+        style={{ width: "100%", maxWidth: 260, padding: "11px 16px", borderRadius: 10, border: `1.5px solid ${err ? "#e07755" : "rgba(255,255,255,0.2)"}`, background: "rgba(255,255,255,0.1)", color: "#f0ebe3", fontFamily: "'Nunito Sans',sans-serif", fontSize: 15, outline: "none", textAlign: "center" }} />
+      {err && <div style={{ color: "#e07755", fontSize: 12, marginTop: 8, fontFamily: "'Nunito Sans',sans-serif" }}>Incorrect password</div>}
+      <button onClick={go} style={{ marginTop: 12, width: "100%", maxWidth: 260, padding: "12px", background: "#a8d5a2", color: "#2c4a2e", border: "none", borderRadius: 10, fontFamily: "'Nunito Sans',sans-serif", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Sign In</button>
     </div>
   );
 }
@@ -288,216 +264,179 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [tapCount, setTapCount] = useState(0);
 
-  const handleLogoTap = () => {
-    const next = tapCount + 1;
-    setTapCount(next);
-    if (next >= 5) { setAdminMode(true); setTapCount(0); }
-    setTimeout(() => setTapCount(0), 3000);
-  };
-
+  const handleLogoTap = () => { const n = tapCount + 1; setTapCount(n); if (n >= 5) { setAdminMode(true); setTapCount(0); } setTimeout(() => setTapCount(0), 3000); };
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2200); };
+  const addToList = (deal) => { if (!addedIds.has(deal.id)) { setShoppingList(p => [...p, deal]); setAddedIds(p => new Set([...p, deal.id])); showToast(`${deal.item} added`); } };
+  const removeFromList = (id) => { setShoppingList(p => p.filter(d => d.id !== id)); setAddedIds(p => { const n = new Set(p); n.delete(id); return n; }); };
 
-  const addToList = (deal) => {
-    if (!addedIds.has(deal.id)) {
-      setShoppingList(prev => [...prev, deal]);
-      setAddedIds(prev => new Set([...prev, deal.id]));
-      showToast(`${deal.item} added`);
-    }
-  };
-
-  const removeFromList = (id) => {
-    setShoppingList(prev => prev.filter(d => d.id !== id));
-    setAddedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
-  };
-
-  const allDeals = deals.map(d => ({
-    ...d,
-    storeName: INITIAL_STORES.find(s => s.id === d.storeId)?.name || "",
-    storeColor: INITIAL_STORES.find(s => s.id === d.storeId)?.color || "#888",
-    storeAccent: INITIAL_STORES.find(s => s.id === d.storeId)?.accent || "#eee",
-    storeEmoji: INITIAL_STORES.find(s => s.id === d.storeId)?.emoji || "🏪",
-  }));
-
-  const filteredDeals = allDeals.filter(d => {
-    const matchStore = !selectedStore || d.storeName === selectedStore;
-    const matchCat = selectedCategory === "All" || d.category === selectedCategory;
-    const matchSearch = !searchQuery || d.item.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchStore && matchCat && matchSearch;
-  });
-
-  const listByStore = shoppingList.reduce((acc, d) => {
-    if (!acc[d.storeName]) acc[d.storeName] = [];
-    acc[d.storeName].push(d);
-    return acc;
-  }, {});
-
+  const allDeals = deals.map(d => ({ ...d, storeName: INITIAL_STORES.find(s => s.id === d.storeId)?.name || "", storeColor: INITIAL_STORES.find(s => s.id === d.storeId)?.color || "#888", storeAccent: INITIAL_STORES.find(s => s.id === d.storeId)?.accent || "#eee", storeEmoji: INITIAL_STORES.find(s => s.id === d.storeId)?.emoji || "🏪" }));
+  const filteredDeals = allDeals.filter(d => (!selectedStore || d.storeName === selectedStore) && (selectedCategory === "All" || d.category === selectedCategory) && (!searchQuery || d.item.toLowerCase().includes(searchQuery.toLowerCase())));
+  const listByStore = shoppingList.reduce((acc, d) => { if (!acc[d.storeName]) acc[d.storeName] = []; acc[d.storeName].push(d); return acc; }, {});
   const totalSavings = shoppingList.reduce((sum, d) => sum + (parseFloat(d.orig) - parseFloat(d.price)), 0);
 
   if (adminMode && !adminAuthed) return <AdminLogin onSuccess={() => setAdminAuthed(true)} />;
   if (adminMode && adminAuthed) return <AdminPanel deals={deals} setDeals={setDeals} onExit={() => { setAdminMode(false); setAdminAuthed(false); }} />;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f5f0e8", fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#f7f3ed" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,700;1,400&family=Nunito+Sans:wght@300;400;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .app-header { background: #1a1a2e; padding: 0 20px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #e8a838; }
-        .logo-wrap { display: flex; align-items: center; gap: 10px; padding: 14px 0; cursor: pointer; user-select: none; }
-        .logo-icon { width: 32px; height: 32px; background: #e8a838; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .logo-text { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: #fff; }
-        .logo-text span { color: #e8a838; }
-        .loc-tag { font-family: 'DM Sans', sans-serif; font-size: 11px; color: #8899aa; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; letter-spacing: 0.4px; }
-        .hero { background: linear-gradient(160deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); padding: 24px 20px 28px; position: relative; overflow: hidden; }
-        .hero::after { content: ''; position: absolute; right: -20px; top: -20px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(232,168,56,0.15) 0%, transparent 70%); border-radius: 50%; }
-        .hero-eyebrow { font-size: 10px; font-weight: 600; color: #e8a838; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
-        .hero-headline { font-family: 'Lora', serif; font-size: 26px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 4px; }
-        .hero-headline em { color: #e8a838; font-style: normal; }
-        .hero-sub { font-size: 13px; color: #8899bb; margin-bottom: 16px; }
-        .hero-stats { display: flex; gap: 20px; }
-        .hero-stat-num { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: #e8a838; }
-        .hero-stat-label { font-size: 10px; color: #6677aa; text-transform: uppercase; letter-spacing: 0.5px; }
-        .tab-bar { display: flex; background: #fff; border-bottom: 1px solid #e8e0d4; }
-        .tab-btn { flex: 1; padding: 13px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #aaa; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-        .tab-btn.active { color: #1a1a2e; border-bottom-color: #e8a838; }
-        .search-wrap { padding: 12px 16px; background: #fff; border-bottom: 1px solid #ede8df; }
-        .search-inner { display: flex; align-items: center; gap: 10px; background: #f5f0e8; border: 1.5px solid #e0d8cc; border-radius: 10px; padding: 9px 14px; }
-        .search-input { flex: 1; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1a1a2e; outline: none; }
-        .search-input::placeholder { color: #b0a898; }
-        .store-scroll { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; background: #faf7f2; border-bottom: 1px solid #ede8df; scrollbar-width: none; }
-        .store-scroll::-webkit-scrollbar { display: none; }
-        .store-pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 24px; border: 1.5px solid #ddd; background: #fff; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-size: 12px; font-weight: 500; color: #555; flex-shrink: 0; }
-        .store-pill.active { border-color: var(--sc); background: var(--sc); color: #fff; }
-        .store-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sc); flex-shrink: 0; }
-        .store-pill.active .store-dot { background: rgba(255,255,255,0.5); }
-        .cat-scroll { display: flex; gap: 7px; padding: 10px 16px; overflow-x: auto; background: #f5f0e8; scrollbar-width: none; border-bottom: 1px solid #e8e0d4; }
-        .cat-scroll::-webkit-scrollbar { display: none; }
-        .cat-pill { padding: 5px 13px; border-radius: 20px; border: 1px solid #d8d0c4; background: #fff; cursor: pointer; font-size: 11px; font-weight: 600; color: #666; white-space: nowrap; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px; flex-shrink: 0; }
-        .cat-pill.active { background: #1a1a2e; color: #e8a838; border-color: #1a1a2e; }
-        .results-header { padding: 12px 16px 4px; display: flex; justify-content: space-between; align-items: baseline; }
-        .results-label { font-family: 'Lora', serif; font-size: 16px; font-weight: 700; color: #1a1a2e; }
-        .results-count { font-size: 12px; color: #999; }
-        .deals-grid { padding: 8px 12px 110px; display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
-        .deal-card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid #ede8df; transition: all 0.2s; opacity: 0; animation: cardIn 0.3s ease forwards; }
-        .deal-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(26,26,46,0.1); }
-        @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .card-accent-bar { height: 4px; }
-        .card-body { padding: 11px 12px 8px; }
-        .card-tag { display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 7px; border-radius: 4px; margin-bottom: 7px; }
-        .card-name { font-family: 'Lora', serif; font-size: 14px; font-weight: 700; color: #1a1a2e; line-height: 1.3; margin-bottom: 3px; }
-        .card-store { font-size: 10px; color: #aaa; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
-        .card-price { font-family: 'Lora', serif; font-size: 22px; font-weight: 700; color: #1a1a2e; line-height: 1; }
-        .card-unit { font-size: 10px; color: #aaa; margin-top: 1px; }
-        .card-orig { font-size: 11px; color: #ccc; text-decoration: line-through; margin-top: 2px; }
-        .card-footer { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px 10px; border-top: 1px solid #f5f0e8; margin-top: 7px; }
-        .card-savings { font-size: 11px; font-weight: 700; color: #3d6b4f; }
-        .add-btn { width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; transition: all 0.15s; }
-        .add-btn.default { background: #1a1a2e; color: #e8a838; }
-        .add-btn.added { background: #3d6b4f; color: #fff; font-size: 14px; }
-        .fab { position: fixed; bottom: 24px; right: 20px; background: #1a1a2e; color: #fff; border: none; border-radius: 30px; padding: 14px 20px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 24px rgba(26,26,46,0.45); z-index: 50; animation: fabIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-        @keyframes fabIn { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .fab-badge { background: #e8a838; color: #1a1a2e; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
-        .list-view { padding: 16px 16px 110px; }
-        .list-empty { text-align: center; padding: 60px 20px; }
-        .list-empty-icon { font-size: 52px; margin-bottom: 16px; }
-        .list-empty-title { font-family: 'Lora', serif; font-size: 22px; color: #888; margin-bottom: 8px; }
-        .list-empty-sub { font-size: 14px; color: #bbb; }
-        .list-heading { font-family: 'Lora', serif; font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
-        .list-subheading { font-size: 13px; color: #999; margin-bottom: 20px; }
-        .list-store-group { margin-bottom: 20px; }
-        .list-store-label { display: flex; align-items: center; gap: 8px; padding: 8px 0 10px; border-bottom: 2px solid var(--sc); margin-bottom: 8px; }
-        .list-store-label-name { font-family: 'Lora', serif; font-size: 15px; font-weight: 700; color: #1a1a2e; }
-        .list-store-label-count { font-size: 11px; color: #aaa; margin-left: auto; }
-        .list-item { display: flex; align-items: center; justify-content: space-between; background: #fff; border-radius: 10px; padding: 11px 14px; margin-bottom: 7px; border: 1px solid #ede8df; }
-        .list-item-name { font-size: 14px; font-weight: 600; color: #1a1a2e; }
-        .list-item-meta { font-size: 11px; color: #aaa; margin-top: 2px; }
-        .list-item-price { font-family: 'Lora', serif; font-size: 17px; font-weight: 700; color: #1a1a2e; margin-right: 10px; }
-        .remove-btn { background: none; border: none; color: #ddd; cursor: pointer; font-size: 20px; padding: 2px 4px; transition: color 0.15s; }
-        .remove-btn:hover { color: #e05555; }
-        .savings-card { background: linear-gradient(135deg, #1a1a2e, #0f3460); border-radius: 14px; padding: 18px 20px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .savings-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #6677aa; margin-bottom: 4px; }
-        .savings-amount { font-family: 'Lora', serif; font-size: 28px; font-weight: 700; color: #e8a838; }
-        .savings-sub { font-size: 11px; color: #4455aa; }
-        .toast { position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #e8dcc8; padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 500; z-index: 200; box-shadow: 0 4px 20px rgba(0,0,0,0.25); animation: toastIn 0.2s ease; white-space: nowrap; border: 1px solid rgba(232,168,56,0.3); }
-        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-        .no-results { text-align: center; padding: 48px 20px; font-size: 14px; color: #bbb; }
+        .hdr { background: #2c4a2e; padding: 0 18px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #a8d5a2; }
+        .logo { display: flex; align-items: center; gap: 9px; padding: 13px 0; cursor: pointer; user-select: none; }
+        .logo-text { font-family: 'Bitter', serif; font-size: 20px; font-weight: 700; color: #f0ebe3; }
+        .logo-text em { color: #a8d5a2; font-style: italic; }
+        .loc { font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: #7aaa82; background: rgba(168,213,162,0.12); border: 1px solid rgba(168,213,162,0.25); padding: 4px 10px; border-radius: 20px; }
+        .hero { background: #2c4a2e; padding: 0 18px 26px; }
+        .hero-stripe { height: 3px; background: linear-gradient(90deg, #a8d5a2, #c8e6b0, #d4a96a, #8b5e3c); margin-bottom: 20px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(168,213,162,0.15); border: 1px solid rgba(168,213,162,0.3); border-radius: 20px; padding: 4px 12px; margin-bottom: 11px; }
+        .hero-dot { width: 6px; height: 6px; background: #a8d5a2; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+        .hero-badge-txt { font-family: 'Nunito Sans', sans-serif; font-size: 10px; font-weight: 700; color: #a8d5a2; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-family: 'Bitter', serif; font-size: 28px; font-weight: 700; color: #f0ebe3; line-height: 1.2; margin-bottom: 6px; }
+        .hero-title em { color: #a8d5a2; font-style: italic; }
+        .hero-sub { font-family: 'Nunito Sans', sans-serif; font-size: 13px; color: #7aaa82; margin-bottom: 18px; line-height: 1.5; }
+        .hero-chips { display: flex; gap: 10px; }
+        .hchip { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 6px; }
+        .hchip-n { font-family: 'Bitter', serif; font-size: 16px; font-weight: 700; color: #a8d5a2; }
+        .hchip-l { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #6a9a72; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tabs { display: flex; background: #fff; border-bottom: 1px solid #e8e0d5; }
+        .tab { flex: 1; padding: 12px 8px; font-family: 'Nunito Sans', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #b0a090; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab.on { color: #2c4a2e; border-bottom-color: #4a7c59; }
+        .sbar { padding: 12px 16px; background: #fff; border-bottom: 1px solid #ede5d8; }
+        .sbox { display: flex; align-items: center; gap: 9px; background: #f7f3ed; border: 1.5px solid #ddd6cc; border-radius: 10px; padding: 9px 13px; }
+        .sbox:focus-within { border-color: #4a7c59; }
+        .sinp { flex: 1; border: none; background: none; font-family: 'Nunito Sans', sans-serif; font-size: 14px; color: #2c2c2c; outline: none; }
+        .sinp::placeholder { color: #bbb0a0; }
+        .strow { display: flex; gap: 8px; padding: 12px 14px; overflow-x: auto; background: #faf7f2; border-bottom: 1px solid #ede5d8; scrollbar-width: none; }
+        .strow::-webkit-scrollbar { display: none; }
+        .stchip { display: flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 24px; border: 1.5px solid #ddd6cc; background: #fff; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: 'Nunito Sans', sans-serif; font-size: 12px; font-weight: 600; color: #666; flex-shrink: 0; }
+        .stchip.on { border-color: var(--sc); background: var(--sc); color: #fff; }
+        .sdot { width: 7px; height: 7px; border-radius: 50%; background: var(--sc); flex-shrink: 0; }
+        .stchip.on .sdot { background: rgba(255,255,255,0.5); }
+        .catrow { display: flex; gap: 7px; padding: 10px 14px; overflow-x: auto; background: #f7f3ed; scrollbar-width: none; border-bottom: 1px solid #e8e0d5; }
+        .catrow::-webkit-scrollbar { display: none; }
+        .cchip { padding: 5px 13px; border-radius: 20px; border: 1px solid #ddd6cc; background: #fff; cursor: pointer; font-family: 'Nunito Sans', sans-serif; font-size: 11px; font-weight: 700; color: #7a6a5a; white-space: nowrap; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px; flex-shrink: 0; }
+        .cchip.on { background: #2c4a2e; color: #a8d5a2; border-color: #2c4a2e; }
+        .rhdr { padding: 12px 16px 4px; display: flex; justify-content: space-between; align-items: baseline; }
+        .rtitle { font-family: 'Bitter', serif; font-size: 17px; font-weight: 700; color: #2c2c2c; }
+        .rcount { font-family: 'Nunito Sans', sans-serif; font-size: 12px; color: #b0a090; }
+        .grid { padding: 8px 12px 110px; display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 10px; }
+        .card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid #e8e0d5; transition: all 0.2s; opacity: 0; animation: cin 0.3s ease forwards; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(44,74,46,0.1); }
+        @keyframes cin { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+        .cstripe { height: 5px; }
+        .cbody { padding: 11px 12px 7px; }
+        .ctag { display: inline-block; font-family: 'Nunito Sans', sans-serif; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; margin-bottom: 7px; }
+        .cname { font-family: 'Bitter', serif; font-size: 14px; font-weight: 700; color: #2c2c2c; line-height: 1.25; margin-bottom: 3px; }
+        .cstore { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #b0a090; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+        .cprice { font-family: 'Bitter', serif; font-size: 24px; font-weight: 700; color: #2c4a2e; line-height: 1; }
+        .cunit { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #b0a090; margin-top: 1px; }
+        .corig { font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: #ccc; text-decoration: line-through; margin-top: 2px; }
+        .cfoot { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px 10px; border-top: 1px solid #f5f0e8; margin-top: 7px; }
+        .cpct { font-family: 'Nunito Sans', sans-serif; font-size: 11px; font-weight: 700; color: #4a7c59; }
+        .abtn { width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.15s; }
+        .abtn.off { background: #2c4a2e; color: #a8d5a2; }
+        .abtn.on { background: #4a7c59; color: #fff; font-size: 14px; }
+        .fab { position: fixed; bottom: 24px; right: 18px; background: #2c4a2e; color: #f0ebe3; border: none; border-radius: 28px; padding: 13px 20px; font-family: 'Nunito Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 24px rgba(44,74,46,0.4); z-index: 50; animation: fabIn 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes fabIn { from{opacity:0;transform:scale(0.8) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);} }
+        .fabb { background: #a8d5a2; color: #2c4a2e; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+        .lview { padding: 16px 16px 110px; }
+        .lempty { text-align: center; padding: 60px 20px; }
+        .lempty-i { font-size: 52px; margin-bottom: 14px; }
+        .lempty-t { font-family: 'Bitter', serif; font-size: 22px; color: #b0a090; margin-bottom: 8px; }
+        .lempty-s { font-family: 'Nunito Sans', sans-serif; font-size: 14px; color: #ccc; }
+        .lh { font-family: 'Bitter', serif; font-size: 22px; font-weight: 700; color: #2c2c2c; margin-bottom: 3px; }
+        .lsh { font-family: 'Nunito Sans', sans-serif; font-size: 13px; color: #b0a090; margin-bottom: 20px; }
+        .lgrp { margin-bottom: 20px; }
+        .lsthdr { display: flex; align-items: center; gap: 8px; padding: 8px 0 10px; border-bottom: 2px solid var(--sc); margin-bottom: 8px; }
+        .lstname { font-family: 'Bitter', serif; font-size: 15px; font-weight: 700; color: #2c2c2c; }
+        .litem { display: flex; align-items: center; justify-content: space-between; background: #fff; border-radius: 10px; padding: 11px 14px; margin-bottom: 7px; border: 1px solid #e8e0d5; }
+        .liname { font-family: 'Nunito Sans', sans-serif; font-size: 14px; font-weight: 700; color: #2c2c2c; }
+        .limeta { font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: #b0a090; margin-top: 2px; }
+        .lprice { font-family: 'Bitter', serif; font-size: 17px; font-weight: 700; color: #2c4a2e; margin-right: 10px; }
+        .rmbtn { background: none; border: none; color: #ddd; cursor: pointer; font-size: 20px; padding: 2px 4px; transition: color 0.15s; }
+        .rmbtn:hover { color: #b5451b; }
+        .savebox { background: #2c4a2e; border-radius: 14px; padding: 18px 20px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .savelbl { font-family: 'Nunito Sans', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7aaa82; margin-bottom: 4px; }
+        .saveamt { font-family: 'Bitter', serif; font-size: 30px; font-weight: 700; color: #a8d5a2; }
+        .savesub { font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: #5a8a62; }
+        .toast { position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%); background: #2c4a2e; color: #f0ebe3; padding: 9px 18px; border-radius: 22px; font-family: 'Nunito Sans', sans-serif; font-size: 13px; font-weight: 600; z-index: 200; box-shadow: 0 4px 20px rgba(44,74,46,0.3); animation: tin 0.2s ease; white-space: nowrap; border: 1px solid rgba(168,213,162,0.3); }
+        @keyframes tin { from{opacity:0;transform:translateX(-50%) translateY(8px);}to{opacity:1;transform:translateX(-50%) translateY(0);} }
+        .nores { text-align: center; padding: 48px 20px; font-family: 'Nunito Sans', sans-serif; font-size: 14px; color: #b0a090; }
       `}</style>
 
-      <div className="app-header">
-        <div className="logo-wrap" onClick={handleLogoTap}>
-          <div className="logo-icon">🌲</div>
-          <div className="logo-text">PDX <span>Fresh</span></div>
+      <div className="hdr">
+        <div className="logo" onClick={handleLogoTap}>
+          <span style={{ fontSize: 22 }}>🌿</span>
+          <div className="logo-text">PDX <em>Fresh</em></div>
         </div>
-        <div className="loc-tag">📍 Portland, OR</div>
+        <div className="loc">📍 Portland, OR</div>
       </div>
 
       <div className="hero">
-        <div className="hero-eyebrow">Weekly Deals — April 2026</div>
-        <div className="hero-headline">Shop local.<br /><em>Save more.</em></div>
-        <div className="hero-sub">Fresh deals from Portland's best local stores</div>
-        <div className="hero-stats">
-          <div className="hero-stat"><div className="hero-stat-num">{deals.length}</div><div className="hero-stat-label">Deals</div></div>
-          <div className="hero-stat"><div className="hero-stat-num">{INITIAL_STORES.length}</div><div className="hero-stat-label">Stores</div></div>
-          <div className="hero-stat"><div className="hero-stat-num">PDX</div><div className="hero-stat-label">Local Only</div></div>
+        <div className="hero-stripe" />
+        <div className="hero-badge"><div className="hero-dot" /><span className="hero-badge-txt">Updated Weekly</span></div>
+        <div className="hero-title">Your local<br /><em>farmers market,</em><br />in your pocket.</div>
+        <div className="hero-sub">Fresh deals from Portland's best independent grocers — all in one place.</div>
+        <div className="hero-chips">
+          <div className="hchip"><span className="hchip-n">{deals.length}</span><span className="hchip-l">Deals</span></div>
+          <div className="hchip"><span className="hchip-n">{INITIAL_STORES.length}</span><span className="hchip-l">Stores</span></div>
+          <div className="hchip"><span className="hchip-n">PDX</span><span className="hchip-l">Local Only</span></div>
         </div>
       </div>
 
-      <div className="tab-bar">
-        <button className={`tab-btn ${view === "browse" ? "active" : ""}`} onClick={() => setView("browse")}>Browse Deals</button>
-        <button className={`tab-btn ${view === "list" ? "active" : ""}`} onClick={() => setView("list")}>My List {shoppingList.length > 0 ? `(${shoppingList.length})` : ""}</button>
+      <div className="tabs">
+        <button className={`tab ${view === "browse" ? "on" : ""}`} onClick={() => setView("browse")}>Browse Deals</button>
+        <button className={`tab ${view === "list" ? "on" : ""}`} onClick={() => setView("list")}>My List {shoppingList.length > 0 ? `(${shoppingList.length})` : ""}</button>
       </div>
 
       {view === "browse" && (
         <>
-          <div className="search-wrap">
-            <div className="search-inner">
-              <span style={{ fontSize: 14, opacity: 0.5 }}>🔍</span>
-              <input className="search-input" placeholder="Search strawberries, salmon, oats..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-              {searchQuery && <span style={{ cursor: "pointer", color: "#bbb", fontSize: 18 }} onClick={() => setSearchQuery("")}>×</span>}
+          <div className="sbar">
+            <div className="sbox">
+              <span style={{ fontSize: 14, opacity: 0.4 }}>🔍</span>
+              <input className="sinp" placeholder="Search strawberries, salmon, oats..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              {searchQuery && <span style={{ cursor: "pointer", color: "#ccc", fontSize: 18 }} onClick={() => setSearchQuery("")}>×</span>}
             </div>
           </div>
-          <div className="store-scroll">
-            <div className="store-pill" style={{ "--sc": "#1a1a2e" }} onClick={() => setSelectedStore(null)}>
-              <div className="store-dot" style={{ background: selectedStore ? "#ccc" : "#1a1a2e" }} />
-              <span style={{ fontWeight: !selectedStore ? 700 : 500 }}>All Stores</span>
+          <div className="strow">
+            <div className="stchip" style={{ "--sc": "#2c4a2e" }} onClick={() => setSelectedStore(null)}>
+              <div className="sdot" style={{ background: selectedStore ? "#ccc" : "#2c4a2e" }} />
+              <span style={{ fontWeight: !selectedStore ? 700 : 600 }}>All Stores</span>
             </div>
             {INITIAL_STORES.map(s => (
-              <div key={s.id} className={`store-pill ${selectedStore === s.name ? "active" : ""}`} style={{ "--sc": s.color }} onClick={() => setSelectedStore(selectedStore === s.name ? null : s.name)}>
-                <div className="store-dot" />{s.emoji} {s.name}
+              <div key={s.id} className={`stchip ${selectedStore === s.name ? "on" : ""}`} style={{ "--sc": s.color }} onClick={() => setSelectedStore(selectedStore === s.name ? null : s.name)}>
+                <div className="sdot" />{s.emoji} {s.name}
               </div>
             ))}
           </div>
-          <div className="cat-scroll">
-            {CATEGORIES.map(c => (
-              <div key={c} className={`cat-pill ${selectedCategory === c ? "active" : ""}`} onClick={() => setSelectedCategory(c)}>{c}</div>
-            ))}
+          <div className="catrow">
+            {CATEGORIES.map(c => <div key={c} className={`cchip ${selectedCategory === c ? "on" : ""}`} onClick={() => setSelectedCategory(c)}>{c}</div>)}
           </div>
-          <div className="results-header">
-            <div className="results-label">{selectedStore || (selectedCategory !== "All" ? selectedCategory : "All Deals")}</div>
-            <div className="results-count">{filteredDeals.length} deal{filteredDeals.length !== 1 ? "s" : ""}</div>
+          <div className="rhdr">
+            <div className="rtitle">{selectedStore || (selectedCategory !== "All" ? selectedCategory : "All Deals")}</div>
+            <div className="rcount">{filteredDeals.length} deal{filteredDeals.length !== 1 ? "s" : ""} this week</div>
           </div>
-          {filteredDeals.length === 0 ? (
-            <div className="no-results">No deals found. Try a different search or filter.</div>
-          ) : (
-            <div className="deals-grid">
+          {filteredDeals.length === 0 ? <div className="nores">No deals found — try a different search.</div> : (
+            <div className="grid">
               {filteredDeals.map((deal, i) => {
                 const store = INITIAL_STORES.find(s => s.id === deal.storeId);
                 const isAdded = addedIds.has(deal.id);
                 return (
-                  <div key={deal.id} className="deal-card" style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}>
-                    <div className="card-accent-bar" style={{ background: store?.color }} />
-                    <div className="card-body">
-                      <div className="card-tag" style={{ background: store?.accent, color: store?.color }}>{deal.tag || deal.category}</div>
-                      <div className="card-name">{deal.item}</div>
-                      <div className="card-store"><span>{store?.emoji}</span>{deal.storeName}</div>
-                      <div className="card-price">${deal.price}</div>
-                      <div className="card-unit">per {deal.unit}</div>
-                      <div className="card-orig">was ${deal.orig}</div>
+                  <div key={deal.id} className="card" style={{ animationDelay: `${Math.min(i * 25, 280)}ms` }}>
+                    <div className="cstripe" style={{ background: store?.color }} />
+                    <div className="cbody">
+                      <div className="ctag" style={{ background: store?.accent, color: store?.color }}>{deal.tag || deal.category}</div>
+                      <div className="cname">{deal.item}</div>
+                      <div className="cstore"><span>{store?.emoji}</span>{deal.storeName}</div>
+                      <div className="cprice">${deal.price}</div>
+                      <div className="cunit">per {deal.unit}</div>
+                      <div className="corig">was ${deal.orig}</div>
                     </div>
-                    <div className="card-footer">
-                      <span className="card-savings">↓ {pctOff(deal.price, deal.orig)}% off</span>
-                      <button className={`add-btn ${isAdded ? "added" : "default"}`} onClick={() => addToList(deal)}>
-                        {isAdded ? "✓" : "+"}
-                      </button>
+                    <div className="cfoot">
+                      <span className="cpct">↓ {pctOff(deal.price, deal.orig)}% off</span>
+                      <button className={`abtn ${isAdded ? "on" : "off"}`} onClick={() => addToList(deal)}>{isAdded ? "✓" : "+"}</button>
                     </div>
                   </div>
                 );
@@ -505,54 +444,52 @@ export default function App() {
             </div>
           )}
           {shoppingList.length > 0 && (
-            <button className="fab" onClick={() => setView("list")}>
-              🛒 My List <span className="fab-badge">{shoppingList.length}</span>
-            </button>
+            <button className="fab" onClick={() => setView("list")}>🛒 My List <span className="fabb">{shoppingList.length}</span></button>
           )}
         </>
       )}
 
       {view === "list" && (
-        <div className="list-view">
+        <div className="lview">
           {shoppingList.length === 0 ? (
-            <div className="list-empty">
-              <div className="list-empty-icon">🛒</div>
-              <div className="list-empty-title">Your list is empty</div>
-              <div className="list-empty-sub">Browse deals and tap + to add items</div>
+            <div className="lempty">
+              <div className="lempty-i">🧺</div>
+              <div className="lempty-t">Your basket is empty</div>
+              <div className="lempty-s">Browse deals and tap + to add items</div>
             </div>
           ) : (
             <>
-              <div className="list-heading">Shopping List</div>
-              <div className="list-subheading">Organized by store for efficient shopping</div>
+              <div className="lh">Shopping List</div>
+              <div className="lsh">Organized by store for easy shopping</div>
               {Object.entries(listByStore).map(([storeName, items]) => {
                 const store = INITIAL_STORES.find(s => s.name === storeName);
                 return (
-                  <div key={storeName} className="list-store-group">
-                    <div className="list-store-label" style={{ "--sc": store?.color }}>
+                  <div key={storeName} className="lgrp">
+                    <div className="lsthdr" style={{ "--sc": store?.color }}>
                       <span style={{ fontSize: 16 }}>{store?.emoji}</span>
-                      <span className="list-store-label-name">{storeName}</span>
-                      <span className="list-store-label-count">{items.length} item{items.length > 1 ? "s" : ""}</span>
+                      <span className="lstname">{storeName}</span>
+                      <span style={{ fontFamily: "'Nunito Sans',sans-serif", fontSize: 11, color: "#b0a090", marginLeft: "auto" }}>{items.length} item{items.length > 1 ? "s" : ""}</span>
                     </div>
                     {items.map(item => (
-                      <div key={item.id} className="list-item">
+                      <div key={item.id} className="litem">
                         <div style={{ flex: 1 }}>
-                          <div className="list-item-name">{item.item}</div>
-                          <div className="list-item-meta">{item.unit} · <span style={{ color: "#3d6b4f", fontWeight: 700 }}>{pctOff(item.price, item.orig)}% off</span></div>
+                          <div className="liname">{item.item}</div>
+                          <div className="limeta">{item.unit} · <span style={{ color: "#4a7c59", fontWeight: 700 }}>{pctOff(item.price, item.orig)}% off</span></div>
                         </div>
-                        <div className="list-item-price">${item.price}</div>
-                        <button className="remove-btn" onClick={() => removeFromList(item.id)}>×</button>
+                        <div className="lprice">${item.price}</div>
+                        <button className="rmbtn" onClick={() => removeFromList(item.id)}>×</button>
                       </div>
                     ))}
                   </div>
                 );
               })}
-              <div className="savings-card">
+              <div className="savebox">
                 <div>
-                  <div className="savings-label">Est. Total Savings</div>
-                  <div className="savings-amount">${totalSavings.toFixed(2)}</div>
-                  <div className="savings-sub">vs. regular prices</div>
+                  <div className="savelbl">Est. Total Savings</div>
+                  <div className="saveamt">${totalSavings.toFixed(2)}</div>
+                  <div className="savesub">vs. regular prices</div>
                 </div>
-                <span style={{ fontSize: 40 }}>🎉</span>
+                <span style={{ fontSize: 42 }}>🌿</span>
               </div>
             </>
           )}
