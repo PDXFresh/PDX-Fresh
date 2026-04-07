@@ -287,19 +287,22 @@ export default function App() {
         .logo-text { font-family: 'Bitter', serif; font-size: 20px; font-weight: 700; color: #f0ebe3; }
         .logo-text em { color: #a8d5a2; font-style: italic; }
         .loc { font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: #7aaa82; background: rgba(168,213,162,0.12); border: 1px solid rgba(168,213,162,0.25); padding: 4px 10px; border-radius: 20px; }
-        .hero { background: #2c4a2e; padding: 0 18px 26px; }
+        .hero { position: relative; padding: 0 18px 26px; overflow: hidden; min-height: 220px; }
+        .hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200&q=80'); background-size: cover; background-position: center 40%; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(28,52,30,0.88) 0%, rgba(28,52,30,0.75) 50%, rgba(28,52,30,0.65) 100%); }
+        .hero-content { position: relative; z-index: 1; }
         .hero-stripe { height: 3px; background: linear-gradient(90deg, #a8d5a2, #c8e6b0, #d4a96a, #8b5e3c); margin-bottom: 20px; }
-        .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(168,213,162,0.15); border: 1px solid rgba(168,213,162,0.3); border-radius: 20px; padding: 4px 12px; margin-bottom: 11px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(168,213,162,0.2); border: 1px solid rgba(168,213,162,0.4); border-radius: 20px; padding: 4px 12px; margin-bottom: 11px; backdrop-filter: blur(4px); }
         .hero-dot { width: 6px; height: 6px; background: #a8d5a2; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.3;} }
         .hero-badge-txt { font-family: 'Nunito Sans', sans-serif; font-size: 10px; font-weight: 700; color: #a8d5a2; text-transform: uppercase; letter-spacing: 1px; }
-        .hero-title { font-family: 'Bitter', serif; font-size: 28px; font-weight: 700; color: #f0ebe3; line-height: 1.2; margin-bottom: 6px; }
+        .hero-title { font-family: 'Bitter', serif; font-size: 28px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 6px; text-shadow: 0 2px 12px rgba(0,0,0,0.3); }
         .hero-title em { color: #a8d5a2; font-style: italic; }
-        .hero-sub { font-family: 'Nunito Sans', sans-serif; font-size: 13px; color: #7aaa82; margin-bottom: 18px; line-height: 1.5; }
+        .hero-sub { font-family: 'Nunito Sans', sans-serif; font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 18px; line-height: 1.5; text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
         .hero-chips { display: flex; gap: 10px; }
-        .hchip { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 6px; }
+        .hchip { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(4px); }
         .hchip-n { font-family: 'Bitter', serif; font-size: 16px; font-weight: 700; color: #a8d5a2; }
-        .hchip-l { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: #6a9a72; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hchip-l { font-family: 'Nunito Sans', sans-serif; font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.5px; }
         .tabs { display: flex; background: #fff; border-bottom: 1px solid #e8e0d5; }
         .tab { flex: 1; padding: 12px 8px; font-family: 'Nunito Sans', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #b0a090; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
         .tab.on { color: #2c4a2e; border-bottom-color: #4a7c59; }
@@ -375,14 +378,18 @@ export default function App() {
       </div>
 
       <div className="hero">
-        <div className="hero-stripe" />
-        <div className="hero-badge"><div className="hero-dot" /><span className="hero-badge-txt">Updated Weekly</span></div>
-        <div className="hero-title">Your local<br /><em>farmers market,</em><br />in your pocket.</div>
-        <div className="hero-sub">Fresh deals from Portland's best independent grocers — all in one place.</div>
-        <div className="hero-chips">
-          <div className="hchip"><span className="hchip-n">{deals.length}</span><span className="hchip-l">Deals</span></div>
-          <div className="hchip"><span className="hchip-n">{INITIAL_STORES.length}</span><span className="hchip-l">Stores</span></div>
-          <div className="hchip"><span className="hchip-n">PDX</span><span className="hchip-l">Local Only</span></div>
+        <div className="hero-bg" />
+        <div className="hero-overlay" />
+        <div className="hero-content">
+          <div className="hero-stripe" />
+          <div className="hero-badge"><div className="hero-dot" /><span className="hero-badge-txt">Updated Weekly</span></div>
+          <div className="hero-title">Your local<br /><em>farmers market,</em><br />in your pocket.</div>
+          <div className="hero-sub">Fresh deals from Portland's best independent grocers — all in one place.</div>
+          <div className="hero-chips">
+            <div className="hchip"><span className="hchip-n">{deals.length}</span><span className="hchip-l">Deals</span></div>
+            <div className="hchip"><span className="hchip-n">{INITIAL_STORES.length}</span><span className="hchip-l">Stores</span></div>
+            <div className="hchip"><span className="hchip-n">PDX</span><span className="hchip-l">Local Only</span></div>
+          </div>
         </div>
       </div>
 
